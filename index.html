@@ -541,7 +541,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></li>
 <li><a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a></li>
 <li><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></li>
-<li><a href="#patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</a></li>
+<li><a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a></li>
 <li><a href="#patterns-debugging-print">Debugging pipelines with the print operator</a></li>
 <li><a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a></li>
 <li><a href="#patterns-debugging-breakpoint">Debugging pipelines with the debugger</a></li>
@@ -5996,20 +5996,20 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 <hr>
 </div>
 <div class="sect3">
-<h4 id="patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</h4>
+<h4 id="patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>For testing a pipeline, or subscriber, when what you want to test is the timing of the pipeline.</p>
+<p>当你想要测试的是管道的时序时，用于测试管道或订阅者。</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -6019,7 +6019,7 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -6038,11 +6038,11 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>The EntwineTest library, available from GitHub at <a href="https://github.com/tcldr/Entwine.git" class="bare">https://github.com/tcldr/Entwine.git</a>, provides some additional options for making your pipelines testable.
-In addition to a virtual time scheduler, EntwineTest has a <code>TestablePublisher</code> and a <code>TestableSubscriber</code>.
-These work in coordination with the virtual time scheduler to allow you to specify the timing of the publisher generating data, and to valid the data received by the subscriber.</p>
+<p>EntwineTest 库可在 gitHub <a href="https://github.com/tcldr/Entwine.git" class="bare">https://github.com/tcldr/Entwine.git</a> 找到，为使管道可测试提供了一些额外的选择。
+除了虚拟时间调度器外，EntwineTest 还有一个 <code>TestablePublisher</code> 和 <code>TestableSubscriber</code>。
+这些与虚拟时间调度器协调工作，允许你指定发布者生成数据的时间，并验证订阅者收到的数据。</p>
 </dd>
 </dl>
 </div>
@@ -6054,18 +6054,18 @@ These work in coordination with the virtual time scheduler to allow you to speci
 </td>
 <td class="content">
 <div class="paragraph">
-<p>As of Xcode 11.2, there is a bug with SwiftPM that impacts the use of Entwine as a testing library.
-The details can be found at <a href="https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564">SR-11564</a> in Swift&#8217;s open source bug reporting.</p>
+<p>截至 Xcode 11.2，SwiftPM 存在影响使用 Entwine 作为测试库的 bug。
+详细信息可在 Swift 的开源 bug 报告中找到 <a href="https://bugs.swift.org/plugins/servlet/mobile#issue/SR-11564">SR-11564</a>。</p>
 </div>
 <div class="paragraph">
-<p>The workaround, which you may need to apply if using Xcode 11.2, is to set the project setting <code>DEAD_CODE_STRIPPING=NO</code>.</p>
+<p>如果使用 Xcode 11.2，你可能需要应用该解决方法，将项目设置修改为 <code>DEAD_CODE_STRIPPING=NO</code>。</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>An example of this from the EntwineTest project is included:</p>
+<p>包含在 EntwineTest 项目中的一个这样的例子：</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift">UsingCombineTests/EntwineTestExampleTests.swift - testMap</a></div>
@@ -6116,23 +6116,23 @@ The details can be found at <a href="https://bugs.swift.org/plugins/servlet/mobi
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>TestablePublisher</code> lets you set up a publisher that returns specific values at specific times.
-In this case, it&#8217;s returning 3 items at consistent intervals.</td>
+<td><code>TestablePublisher</code> 允许你设置一个在特定时间返回特定值的发布者。
+在这个例子中，它会以相同的间隔返回 3 个值。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>When you use the virtual time scheduler, it is important to make sure to invoke it with start.
-This runs the virtual time scheduler, which can run faster than a clock since it only needs to increment the virtual time and not wait for elapsed time.</td>
+<td>当你使用虚拟时间调度器时，重要的是要确保从 start 开始调用它。
+这会启动虚拟时间调度器，它的运行速度可以比时钟快，因为它只需要增加虚拟时间，而不是等待真实过去的时间。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>results</code> is a TestableSubscriber object, and includes a <code>recordedOutput</code> property which provides  an ordered list of all the data and combine control path interactions with their timing.</td>
+<td><code>results</code> 是一个 TestableSubscriber 对象，包括 <code>recordedOutput</code> 属性，该属性提供所有数据的有序列表，并将控制事件的交互与其时间组合在一起。</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>If this test sequence had been done with asyncAfter, then the test would have taken a minimum of 500ms to complete.
-When I ran this test on my laptop, it was recording 0.0121 seconds to complete the test (12.1ms).</p>
+<p>如果这个测试序列是用 asyncAfter 完成的，那么测试将至少需要 500ms 才能完成。
+当我在我的笔记本电脑上运行此测试时，它记录花费了 0.0121 秒以完成测试（12.1ms）。</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6142,8 +6142,8 @@ When I ran this test on my laptop, it was recording 0.0121 seconds to complete t
 </td>
 <td class="content">
 <div class="paragraph">
-<p>A side effect of EntwineTest is that tests using the virtual time scheduler can run much faster than a real time clock.
-The same tests being created using real time scheduling mechanisms to delay data sending values can take significantly longer to complete.</p>
+<p>EntwineTest 的副作用是，使用虚拟时间调度器的测试比实时时钟运行速度快得多。
+使用实时调度机制来延迟数据发送值的相同测试可能需要更长的时间才能完成。</p>
 </div>
 </td>
 </tr>
@@ -13154,7 +13154,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-08 13:53:55 UTC
+Last updated 2021-08-08 14:19:37 UTC
 </div>
 </div>
 <style>
