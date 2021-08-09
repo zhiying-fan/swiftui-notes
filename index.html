@@ -542,7 +542,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a></li>
 <li><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></li>
 <li><a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a></li>
-<li><a href="#patterns-debugging-print">Debugging pipelines with the print operator</a></li>
+<li><a href="#patterns-debugging-print">使用 print 操作符调试管道</a></li>
 <li><a href="#patterns-debugging-handleevents">使用 handleEvents 操作符调试管道</a></li>
 <li><a href="#patterns-debugging-breakpoint">Debugging pipelines with the debugger</a></li>
 </ul>
@@ -6153,20 +6153,20 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 <hr>
 </div>
 <div class="sect3">
-<h4 id="patterns-debugging-print">Debugging pipelines with the print operator</h4>
+<h4 id="patterns-debugging-print">使用 print 操作符调试管道</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>To gain understanding of what is happening in a pipeline, seeing all control and data interactions.</p>
+<p>为了了解管道中正在发生的事情，查看所有控制事件和数据交互。</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -6180,15 +6180,15 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 <p><a href="#reference-retry">retry</a></p>
 </li>
 <li>
-<p>The ViewController with this code is in the github project at <a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift">UIKit-Combine/GithubViewController.swift</a></p>
+<p>带有此代码的 ViewController 在 github 项目位于 <a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift">UIKit-Combine/GithubViewController.swift</a></p>
 </li>
 <li>
-<p>The retry unit tests in the github project at <a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift">UsingCombineTests/RetryPublisherTests.swift</a></p>
+<p>retry 的单元测试在 github 项目中位于 <a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift">UsingCombineTests/RetryPublisherTests.swift</a></p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -6210,21 +6210,21 @@ For more details on these parts of EntwineTest, see <a href="#patterns-testable-
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>I have found the greatest detail of information comes from selectively using the <a href="#reference-print">print</a> operator.
-The downside is that it prints quite a lot of information, so the output can quickly become overwhelming.
-For understanding a simple pipeline, using the <code>.print()</code> as an operator without any parameters is very straightforward.
-As soon as you want to add more than one print operator, you will likely want to use the string parameter, which is puts in as a prefix to the output.</p>
+<p>我获取的最详细的信息来自有选择地使用 <a href="#reference-print">print</a> 操作符。
+缺点是它打印了大量信息，因此输出可能很快变得非常庞大。
+要理解简单的管道，使用 <code>.print()</code> 作为没有任何参数的操作符是非常简单的。
+一旦你想要添加多个 print 操作符，你可能要使用 string 参数，该参数会作为前缀放在输出中。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The example <a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> uses it in several places, with long descriptive prefixes to make it clear which pipeline is providing the information.</p>
+<p>示例 <a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> 在几个地方都有用到它，使用比较长的描述性前缀，以明确是哪个管道在提供信息。</p>
 </div>
 <div class="paragraph">
-<p>The two pipelines cascade together by connecting through a private published variable - the github user data.
-The two relevant pipelines from that example code:</p>
+<p>通过连接到一个私有的 <code>@Published</code> 的变量 —— githubUserData，两个管道被层叠到了一起。
+该示例代码中的两个相关管道：</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubViewController.swift">UIKit-Combine/GithubViewController.swift</a></div>
@@ -6264,11 +6264,11 @@ The two relevant pipelines from that example code:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>When you run the UIKit-Combine example code, the terminal shows the following output as I slowly enter the username <code>heckj</code>.
-In the course of doing these lookups, two other github accounts are found and retrieved (<code>hec</code> and <code>heck</code>) before the final one.</p>
+<p>当你运行 UIKit-Combine 示例代码时，随着我慢慢的输入用户名 <code>heckj</code>，终端会显示以下输出。
+在进行这些查找的过程中，在最终的帐户之前发现并检索到了另外两个 github 帐户（<code>hec</code> 和 <code>heck</code>）。</p>
 </div>
 <div class="listingblock">
-<div class="title">interactive output from simulator</div>
+<div class="title">模拟器的交互输出</div>
 <div class="content">
 <pre class="rouge highlight"><code>username pipeline: : receive subscription: (RemoveDuplicates)
 username pipeline: : request unlimited
@@ -6301,17 +6301,17 @@ github user data: : receive value: ([UIKit_Combine.GithubAPIUser(login: "heckj",
 </div>
 </div>
 <div class="paragraph">
-<p>Some of the extraneous print statements placed in <a href="#reference-sink">sink</a> closures to see final results have been removed.</p>
+<p>一些放在 <a href="#reference-sink">sink</a> 闭包中，用来查看最终结果的无关打印语句已被删除。</p>
 </div>
 <div class="paragraph">
-<p>You see the initial subscription setup at the very beginning, and then notifications, including the debug representation of the value passed through the <code>print</code> operator.
-Although it is not shown in the example content above, you will also see cancellations when an error occurs, or completions when they emit from a publisher reporting no further data is available.</p>
+<p>你可以在开始时看到初始化订阅的设置，然后看到通知，包括通过 <code>print</code> 操作符传递的值的调试信息。
+虽然上面的示例内容中未显示它，但你还会在出现错误时看到取消管道的事件，或在发布者报告没有进一步数据时的 completions 事件。</p>
 </div>
 <div class="paragraph">
-<p>It can also be beneficial to use a <code>print</code> operator on either side of an operator to understand how it is operating.</p>
+<p>在操作符两侧使用 <code>print</code> 来了解其具体的操作方式也很有用。</p>
 </div>
 <div class="paragraph">
-<p>An example of doing this, leveraging the prefix to show the <a href="#reference-retry">retry</a> operator and how it works:</p>
+<p>一个这样做的例子如下，利用前缀显示 <a href="#reference-retry">retry</a> 操作符及其工作原理：</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/RetryPublisherTests.swift">UsingCombineTests/RetryPublisherTests.swift</a></div>
@@ -6336,16 +6336,16 @@ Although it is not shown in the example content above, you will also see cancell
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>(1)</code> prefix is to show the interactions above the <code>retry</code> operator</td>
+<td>前缀 <code>(1)</code> 是显示 <code>retry</code> 操作符上方的交互行为。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>(2)</code> prefix shows the interactions after the <code>retry</code> operator</td>
+<td>前缀 <code>(2)</code> 是显示 <code>retry</code> 操作符之后的交互行为。</td>
 </tr>
 </table>
 </div>
 <div class="listingblock">
-<div class="title">output from unit test</div>
+<div class="title">单元测试的输出</div>
 <div class="content">
 <pre class="rouge highlight"><code>Test Suite 'Selected tests' started at 2019-07-26 15:59:48.042
 Test Suite 'UsingCombineTests.xctest' started at 2019-07-26 15:59:48.043
@@ -6377,19 +6377,19 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>In the test sample, the publisher always reports a failure, resulting in seeing the prefix <code>(1)</code> receiving the error, and then the resubscription from the <code>retry</code> operator.</td>
+<td>在测试例子中，发布者总是返回失败，在输出结果中可以看到带有前缀 <code>(1)</code> 的错误信息，然后 <code>retry</code> 操作符触发重新订阅。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>And after 4 of those attempts (3 "retries"), then you see the error falling through the pipeline.
-After the error hits the sink, you see the <code>cancel</code> signal propagated back up, which stops at the retry operator.</td>
+<td>在其中4次尝试（3次"重试"）之后，你就会看到从管道中输出的错误。
+当错误到达 sink 后，你会看到发出的 <code>cancel</code> 信号，该信号在重试操作符之后停止。</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>While very effective, the <code>print</code> operator can be a blunt tool, generating a lot of output that you have to parse and review.
-If you want to be more selective with what you identify and print, or if you need to process the data passing through for it to be used more meaningfully, then you look at the <a href="#reference-handleevents">handleEvents</a> operator.
-More detail on how to use this operator for debugging is in  <a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a>.</p>
+<p>虽然非常有效，但 <code>print</code> 操作符是一个钝器，它会生成大量的输出，你必须分析和审查它们以得到你想要的信息。
+如果你想让标识和打印的内容更具选择性，或者如果你需要处理传输的数据才能更有意义地使用它们，那么你可以查看 <a href="#reference-handleevents">handleEvents</a> 操作符。
+有关如何使用此操作符进行调试的更多详细信息，请查阅 <a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a>。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -13154,7 +13154,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-09 14:29:50 UTC
+Last updated 2021-08-09 14:30:51 UTC
 </div>
 </div>
 <style>
