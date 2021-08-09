@@ -539,7 +539,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#patterns-testing-and-debugging">测试和调试</a>
 <ul class="sectlevel3">
 <li><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></li>
-<li><a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a></li>
+<li><a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a></li>
 <li><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></li>
 <li><a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a></li>
 <li><a href="#patterns-debugging-print">Debugging pipelines with the print operator</a></li>
@@ -5597,20 +5597,20 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 <hr>
 </div>
 <div class="sect3">
-<h4 id="patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</h4>
+<h4 id="patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>For testing a subscriber, or something that includes a subscriber, we can emulate the publishing source with PassthroughSubject to provide explicit control of what data gets sent and when.</p>
+<p>为了测试订阅者或包含订阅者的代码，我们可以使用 PassthroughSubject 模拟发布源，明确地控制哪些数据被发送和何时发送。</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -5638,7 +5638,7 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -5657,49 +5657,49 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>When you are testing a subscriber in isolation, you can get more fine-grained control of your tests by emulating the publisher with a <a href="#reference-passthroughsubject">passthroughSubject</a> and using the associated <code>.send()</code> method to trigger updates.</p>
+<p>当你单独测试订阅者时，你可以通过使用 <a href="#reference-passthroughsubject">passthroughSubject</a> 模拟发布者以及使用相关的 <code>.send()</code> 方法触发更新来更精细的控制测试。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>This pattern relies on the subscriber setting up the initial part of the publisher-subscriber lifecycle upon construction, and leaving the code to stand waiting until data is provided.
-With a <code>PassthroughSubject</code>, sending the data to trigger the pipeline and subscriber closures, or following state changes that can be verified, is at the control of the test code itself.</p>
+<p>此模式依赖于订阅者在构建时设置发布者-订阅者生命周期的初始部分，并让代码保持等待直到提供数据。
+使用 <code>PassthroughSubject</code>，发送数据以触发管道和订阅者闭包，或跟踪可以被验证的状态更改，即可控制测试代码本身。</p>
 </div>
 <div class="paragraph">
-<p>This kind of testing pattern also works well when you are testing the response of the subscriber to a failure, which might otherwise terminate a subscription.</p>
+<p>当你测试订阅者对失败的反应时，这种测试模式也非常有效，否则可能会终止订阅。</p>
 </div>
 <div class="paragraph">
-<p>A general pattern for using this kind of test construct is:</p>
+<p>使用这种测试构建方法的一般模式是：</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Set up your subscriber and any pipeline leading to it that you want to include within the test.</p>
+<p>设置你的 subscriber 和任何你想包含在测试中影响它的管道。</p>
 </li>
 <li>
-<p>Create a <code>PassthroughSubject</code> in the test that produces an output type and failure type to match with your subscriber.</p>
+<p>在测试中创建一个 <code>PassthroughSubject</code>，构造合适的输出类型和失败类型以与订阅者匹配。</p>
 </li>
 <li>
-<p>Assert any initial values or preconditions.</p>
+<p>为任何初始值或先决条件设置断言。</p>
 </li>
 <li>
-<p>Send the data through the subject.</p>
+<p>通过 subject 发送数据。</p>
 </li>
 <li>
-<p>Test the results of having sent the data - either directly or asserting on state changes that were expected.</p>
+<p>测试发送数据的结果 —— 直接测试数据或断言预期的状态更改。</p>
 </li>
 <li>
-<p>Send additional data if desired.</p>
+<p>如果需要，发送其他数据。</p>
 </li>
 <li>
-<p>Test further evolution of state or other changes.</p>
+<p>测试状态或其他变化的进一步演变。</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>An example of this pattern follows:</p>
+<p>此模式的示例如下：</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/SinkSubscriberTests.swift#L44">UsingCombineTests/SinkSubscriberTests.swift - testSinkReceiveDataThenError</a></div>
@@ -5773,48 +5773,48 @@ With a <code>PassthroughSubject</code>, sending the data to trigger the pipeline
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This test sets up some variables to capture and modify during test execution that we use to validate when and how the sink code operates.
-Additionally, we have an error defined here because it&#8217;s not coming from other code elsewhere.</td>
+<td>此测试设置了一些变量，以便在测试执行期间捕获和修改它们，用于验证 sink 代码的执行时间和工作方式。
+此外，我们在此处定义了一个错误，以便在我们的测试代码中使用它来验证失败的情况。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The setup for this code uses the <a href="#reference-passthroughsubject">passthroughSubject</a> to drive the test, but the code we are interested in testing is the subscriber.</td>
+<td>此代码设置为使用 <a href="#reference-passthroughsubject">passthroughSubject</a> 来驱动测试，但我们感兴趣的测试代码是订阅者。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The subscriber setup under test (in this case, a standard <a href="#reference-sink">sink</a>).
-We have code paths that trigger on receiving data and completions.</td>
+<td>该订阅者被配置在测试下（在这儿是一个标准的 <a href="#reference-sink">sink</a>）。
+我们配置了在接收到数据和 completion 时会触发的代码。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Within the completion path, we switch on the type of completion, adding an assertion that will fail the test if a finish is called, as we expect to only generate a <code>.failure</code> completion.</td>
+<td>在接收到 completion 时，我们对其调用 switch，添加了一个断言，如果 finish 被调用了，将不通过测试，因为我们期望只会生成 <code>.failure</code> completion。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Testing error equality in Swift can be awkward, but if the error is code you are controlling, you can sometimes use the <code>localizedDescription</code> as a convenient way to test the type of error received.</td>
+<td>Swift 中的测试错误是否相等没那么容易，但如果错误是你正在控制的代码，有时你可以使用 <code>localizedDescription</code> 作为测试收到的错误类型的便捷方式。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The <code>receiveValue</code> closure is more complex in how it asserts against received values.
-Since we are receiving multiple values in the process of this test, we have some additional logic to  check that the values are within the set that we send.
-Like the completion handler, We also increment test specific variables that we will assert on later to validate state and order of operation.</td>
+<td><code>receiveValue</code> 闭包在考虑如何对收到的值进行断言时更为复杂。
+由于我们在此测试过程中会收到多个值，我们有一些额外的逻辑来检查值是否在我们发送的集合内。
+与 completion 的处理逻辑一样，我们还是增加测试特定变量，我们将在以后断言这些变量以验证状态和操作顺序。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>The count variables are validated as preconditions before we send any data to double check our assumptions.</td>
+<td>在我们发送任何数据以仔细检查我们的假设之前，我们先验证计数变量。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>In the test, the <code>send()</code> triggers the actions, and immediately after we can test the side effects through the test variables we are updating.
-In your own code, you may not be able to (or want to) modify your subscriber, but you may be able to provide private/testable properties or windows into the objects to validate them in a similar fashion.</td>
+<td>在测试中，<code>send()</code> 触发了操作，之后我们就可以立即通过验证我们更新的测试变量来验证所产生的效果了。
+在你自己的代码中，你可能无法（或不想要）修改你的订阅者，但你可能能够向对象提供私有/可测试的属性或途径，以类似的方式验证它们。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>We also use <code>send()</code> to trigger a completion, in this case a failure completion.</td>
+<td>我们还使用 <code>send()</code> 发送一个 completion，在这个例子中是一个失败的 completion。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
-<td>And the final <code>send()</code> is validating the operation of the failure that just happened - that it was not processed, and no further state updates happened.</td>
+<td>最后的 <code>send()</code> 验证刚刚发生的失败事件 —— 当前发送的 finished completion 应该没有被处理，并且应该没有后续的状态更新再发生。</td>
 </tr>
 </table>
 </div>
@@ -13154,7 +13154,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-09 14:29:14 UTC
+Last updated 2021-08-09 14:29:50 UTC
 </div>
 </div>
 <style>
