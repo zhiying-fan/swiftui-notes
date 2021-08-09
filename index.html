@@ -527,7 +527,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a></li>
 <li><a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a></li>
 <li><a href="#patterns-merging-streams-interface">合并多个管道以更新 UI 元素</a></li>
-<li><a href="#patterns-delegate-publisher-subject">Creating a repeating publisher by wrapping a delegate based API</a></li>
+<li><a href="#patterns-delegate-publisher-subject">通过包装基于 delegate 的 API 创建重复发布者</a></li>
 <li><a href="#patterns-notificationcenter">Responding to updates from NotificationCenter</a></li>
 </ul>
 </li>
@@ -4757,20 +4757,20 @@ IBAction 消息用于更新 <a href="#reference-published">@Published</a> 属性
 <hr>
 </div>
 <div class="sect3">
-<h4 id="patterns-delegate-publisher-subject">Creating a repeating publisher by wrapping a delegate based API</h4>
+<h4 id="patterns-delegate-publisher-subject">通过包装基于 delegate 的 API 创建重复发布者</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>To use one of the Apple delegate APIs to provide values for a Combine pipeline.</p>
+<p>将 Apple delegate API 之一包装为 Combine 管道来提供值。</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -4783,7 +4783,7 @@ IBAction 消息用于更新 <a href="#reference-published">@Published</a> 属性
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -4799,19 +4799,19 @@ IBAction 消息用于更新 <a href="#reference-published">@Published</a> 属性
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>Where a <a href="#reference-future">Future</a> publisher is great for wrapping existing code to make a single request, it doesn&#8217;t serve as well to make a publisher that produces lengthy, or potentially unbounded, amount of output.</p>
+<p><a href="#reference-future">Future</a> 发布者非常适合包装现有代码以发出单个请求，但它不适用于产生冗长或可能无限量输出的发布者。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>Apple&#8217;s Cocoa APIs have tended to use a object/delegate pattern, where you can opt in to receiving any number of different callbacks (often with data).
-One such example of that is included within the CoreLocation library, which offers a number of different data sources.</p>
+<p>Apple 的 Cocoa API 倾向于使用对象/代理模式，你可以选择接收任意数量的不同回调（通常包含数据）。
+其中一个例子是在 CoreLocation 库中，提供了许多不同的数据源。</p>
 </div>
 <div class="paragraph">
-<p>If you want to consume data provided by one of these kinds of APIs within a pipeline, you can wrap the object and use <a href="#reference-passthroughsubject">passthroughSubject</a> to expose a publisher.
-The sample code below shows an example of wrapping CoreLocation&#8217;s CLManager object and consuming the data from it through a UIKit view controller.</p>
+<p>如果你想在管道中使用此类 API 之一提供的数据，你可以将对象包装起来，并使用 <a href="#reference-passthroughsubject">passthroughSubject</a> 来暴露发布者。
+下面的示例代码显示了一个包装 CoreLocation 中 CLManager 的对象并通过 UIKit 的 ViewController 消费其数据的示例。</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/LocationHeadingProxy.swift">UIKit-Combine/LocationHeadingProxy.swift</a></div>
@@ -4869,36 +4869,36 @@ The sample code below shows an example of wrapping CoreLocation&#8217;s CLManage
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><a href="https://developer.apple.com/documentation/corelocation/cllocationmanager">CLLocationManager</a> is the heart of what is being wrapped, part of CoreLocation.
-Because it has additional methods that need to be called for using the framework, I exposed it as a public read-only property.
-This is useful for requesting user permission to use the location API, which the framework exposes as a method on <code>CLLocationManager</code>.</td>
+<td><a href="https://developer.apple.com/documentation/corelocation/cllocationmanager">CLLocationManager</a> 作为 CoreLocation 的一部分，是被包装的核心。
+因为要使用该框架，它有其他方法需要被调用，因此我将它暴露为一个 public 的只读属性。
+这对于先请求用户许可然后使用位置 API 很有用，框架将该位置 API 暴露为一个在 <code>CLLocationManager</code> 上的方法。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A private instance of <code>PassthroughSubject</code> with the data type we want to publish provides our inside-the-class access to forward data.</td>
+<td>使用一个具有我们要发布的数据类型的 private 的 <code>PassthroughSubject</code> 实例，来提供我们的类内部访问以转发数据。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A public property <code>publisher</code> exposes the publisher from that subject for external subscriptions.</td>
+<td>一个 public 的属性 <code>publisher</code> 将来自上面的 subject 的发布者暴露给外部以供订阅。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The heart of this works by assigning this class as the delegate to the <code>CLLocationManager</code> instance, which is set up at the tail end of initialization.</td>
+<td>其核心是将该类指定为 <code>CLLocationManager</code> 实例的代理，在该实例初始化的尾端进行设置。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The CoreLocation API doesn&#8217;t immediately start sending information.
-There are methods that need to be called to start (and stop) the data flow, and these are wrapped and exposed on this proxy object.
-Most publishers are set up to subscribe and drive consumption based on subscription, so this is a bit out of the norm for how a publisher starts generating data.</td>
+<td>CoreLocation API 不会立即开始发送信息。
+有些方法需要调用才能启动（并停止）数据流，这些方法被包装并暴露在此 <code>LocationHeadingProxy</code> 对象上。
+大多数发布者都设置为订阅并根据订阅驱动消费，因此这有点不符合发布者如何开始生成数据的规范。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>With the delegate defined and the <code>CLLocationManager</code> activated, the data will be provided via callbacks defined on the <a href="https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate">CLLocationManagerDelegate</a>.
-We implement the callbacks we want for this wrapped object, and within them we use <a href="#reference-passthroughsubject">passthroughSubject</a> <code>.send()</code> to forward the information to any existing subscribers.</td>
+<td>在定义代理和激活 <code>CLLocationManager</code> 后，数据将通过在 <a href="https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate">CLLocationManagerDelegate</a> 上定义的回调提供。
+我们为这个包装的对象实现了我们想要的回调，并在其中使用 <a href="#reference-passthroughsubject">passthroughSubject</a> <code>.send()</code> 将信息转发给任何现有的订阅者。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>While not strictly required, the delegate provided an <code>Error</code> reporting callback, so we included that as an example of forwarding an error through <a href="#reference-passthroughsubject">passthroughSubject</a>.</td>
+<td>虽然没有严格要求，但代理提供了 <code>Error</code> 上报回调，因此我们也将其包括在示例中通过 <a href="#reference-passthroughsubject">passthroughSubject</a> 转发。</td>
 </tr>
 </table>
 </div>
@@ -4990,27 +4990,27 @@ We implement the callbacks we want for this wrapped object, and within them we u
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>One of the quirks of CoreLocation is the requirement to ask for permission from the user to access the data.
-The API provided to initiate this request returns immediately, but provides no detail if the user allowed or denied the request.
-The <code>CLLocationManager</code> class includes the information, and exposes it as a class method when you want to retrieve it, but there is no information provided to know when, or if, the user has responded to the request.
-Since the operation doesn&#8217;t provide any return, we provide an integer as the pipeline data, primarily to represent that the request has been made.</td>
+<td>CoreLocation 的特点之一是要向用户请求访问数据的许可。
+启动此请求的 API 将立即返回，但即使用户允许或拒绝请求，它并不提供任何详细信息。
+<code>CLLocationManager</code> 类包括信息，并在想要获取信息时将其作为类方法暴露给外部，但未提供任何信息来了解用户何时或是否响应了请求。
+由于操作不提供任何返回信息，我们将整数提供给管道作为数据，主要表示已发出请求。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Since there isn&#8217;t a clear way to judge when the user will grant permission, but the permission is persistent, we simply use a <a href="#reference-delay">delay</a> operator before attempting to retrieve the data.
-This use simply delays the propagation of the value for two seconds.</td>
+<td>由于没有明确的方法来判断用户何时会授予权限，但权限是持久的，因此在尝试获取数据之前，我们简单地使用了 <a href="#reference-delay">delay</a> 操作符。
+此使用只会将值的传递延迟两秒钟。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>After that delay, we invoke the class method and attempt to update information in the interface with the results of the current provided status.</td>
+<td>延迟后，我们调用类方法，并尝试根据当前提供的状态的结果更新界面中的信息。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Since CoreLocation requires methods to be explicitly enabled or disabled to provide the data, this connects a <code>UISwitch</code> toggle <code>IBAction</code> to the methods exposed on our publisher proxy.</td>
+<td>由于 CoreLocation 需要调用方法来明确启用或禁用数据，因此将我们发布者 proxy 的方法连接到了一个 <code>UISwitch</code> 的 <code>IBAction</code> 开关上。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The heading data is received in this <a href="#reference-sink">sink</a> subscriber, where in this example we write it to a text label.</td>
+<td>方位数据在本 <a href="#reference-sink">sink</a> 订阅者中接收，在此示例中，我们将其写到文本 label 上。</td>
 </tr>
 </table>
 </div>
@@ -13154,7 +13154,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-09 14:26:54 UTC
+Last updated 2021-08-09 14:28:24 UTC
 </div>
 </div>
 <style>
