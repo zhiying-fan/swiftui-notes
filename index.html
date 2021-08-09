@@ -526,7 +526,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a></li>
 <li><a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a></li>
-<li><a href="#patterns-merging-streams-interface">Merging multiple pipelines to update UI elements</a></li>
+<li><a href="#patterns-merging-streams-interface">合并多个管道以更新 UI 元素</a></li>
 <li><a href="#patterns-delegate-publisher-subject">Creating a repeating publisher by wrapping a delegate based API</a></li>
 <li><a href="#patterns-notificationcenter">Responding to updates from NotificationCenter</a></li>
 </ul>
@@ -4506,44 +4506,44 @@ API 结构体中的函数返回一个发布者，然后与 ViewController 中的
 <hr>
 </div>
 <div class="sect3">
-<h4 id="patterns-merging-streams-interface">Merging multiple pipelines to update UI elements</h4>
+<h4 id="patterns-merging-streams-interface">合并多个管道以更新 UI 元素</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>Watch and react to multiple UI elements publishing values, and updating the interface based on the combination of values updated.</p>
+<p>观察并响应多个 UI 元素发送的值，并将更新的值联合起来以更新界面。</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>The ViewController with this code is in the github project at <a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift">UIKit-Combine/FormViewController.swift</a></p>
+<p>带有此代码的 ViewController 在 github 项目中，位于 <a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift">UIKit-Combine/FormViewController.swift</a></p>
 </li>
 <li>
-<p>Publishers:
+<p>发布者:
 <a href="#reference-published">@Published</a>,</p>
 </li>
 <li>
-<p>Operators:
+<p>操作符:
 <a href="#reference-combinelatest">combineLatest</a>,
 <a href="#reference-map">map</a>,
 <a href="#reference-receive">receive</a></p>
 </li>
 <li>
-<p>Subscribers:
+<p>订阅者:
 <a href="#reference-assign">assign</a></p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -4553,15 +4553,15 @@ API 结构体中的函数返回一个发布者，然后与 ViewController 中的
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>This example intentionally mimics a lot of web form style validation scenarios, but within UIKit and using Combine.</p>
+<p>此示例故意模仿许多 Web 表单样式的验证场景，不过是在 UIKit 中使用 Combine。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>A view controller is set up with multiple elements to declaratively update.
-The view controller hosts 3 primary text input fields:</p>
+<p>ViewController 被配置了多个通过声明式更新的元素。
+同时持有了 3 个主要的文本输入字段：</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4577,52 +4577,52 @@ The view controller hosts 3 primary text input fields:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>It also hosts a button to submit the combined values, and two labels to provide feedback.</p>
+<p>它还有一个按钮来提交合并的值，以及两个 labels 来提供反馈。</p>
 </div>
 <div class="paragraph">
-<p>The rules of these update that are implemented:</p>
+<p>这些字段的更新规则被实现为：</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The entry in <code>value1</code> has to be at least 5 characters.</p>
+<p><code>value1</code> 中的条目至少有 3 个字符。</p>
 </li>
 <li>
-<p>The entry in <code>value2</code> has to be at least 5 characters.</p>
+<p><code>value2</code> 中的条目至少有 5 个字符。</p>
 </li>
 <li>
-<p>The entry in <code>value2_repeat</code> has to be the same as <code>value2</code>.</p>
+<p><code>value2_repeat</code> 中的条目必须与 <code>value2</code> 相同。</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>If any of these rules aren&#8217;t met, then we want the submit button to be disabled and relevant messages displayed explaining what needs to be done.</p>
+<p>如果这些规则中的任何一个未得到满足，则我们希望禁用提交按钮并显示相关消息，解释需要满足的内容。</p>
 </div>
 <div class="paragraph">
-<p>This can be achieved by setting up a cascade of pipelines that link and merge together.</p>
+<p>这可以通过设置连接与合并在一起的一系列管道来实现。</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>There is a <a href="#reference-published">@Published</a> property matching each of the user input fields.
-<a href="#reference-combinelatest">combineLatest</a> is used to take the continually published updates from the properties and merge them into a single pipeline.
-A <a href="#reference-map">map</a> operator enforces the rules about characters required and the values needing to be the same.
-If the values don&#8217;t match the required output, we pass a nil value down the pipeline.</p>
+<p>有一个 <a href="#reference-published">@Published</a> 属性匹配每个用户输入字段。
+<a href="#reference-combinelatest">combineLatest</a> 用于从属性中获取不断发布的更新，并将它们合并到单个管道中。
+<a href="#reference-map">map</a> 操作符强制执行所需字符和值必须相同的规则。
+如果值与所需的输出不匹配，我们将在管道中传递 nil。</p>
 </li>
 <li>
-<p>Another validation pipeline is set up for value1, just using a <a href="#reference-map">map</a> operator to validate the value, or return nil.</p>
+<p>value1 还另外有一个验证管道，只使用了 <a href="#reference-map">map</a> 操作符来验证值，或返回 nil。</p>
 </li>
 <li>
-<p>The logic within the map operators  doing the validation is also used to update the label messages in the user interface.</p>
+<p>执行验证的 map 操作符内部的逻辑也用于更新用户界面中的 label 信息。</p>
 </li>
 <li>
-<p>A final pipeline uses <a href="#reference-combinelatest">combineLatest</a> to merge the two validation pipelines into a single pipeline.
-A subscriber is attached to this combined pipeline to determine if the submission button should be enabled.</p>
+<p>最终管道使用 <a href="#reference-combinelatest">combineLatest</a> 将两条验证管道合并为一条管道。
+此组合的管道上连接了订阅者，以确定是否应启用提交按钮。</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The example below shows these all connected.</p>
+<p>下面的示例将这些结合起来进行了展示。</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/FormViewController.swift">UIKit-Combine/FormViewController.swift</a></div>
@@ -4710,46 +4710,46 @@ A subscriber is attached to this combined pipeline to determine if the submissio
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The start of this code follows the same patterns laid out in <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a>.
-IBAction messages are used to update the <a href="#reference-published">@Published</a> properties, triggering updates to any subscribers attached.</td>
+<td>此代码的开头遵照了 <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a> 中的模式.
+IBAction 消息用于更新 <a href="#reference-published">@Published</a> 属性，触发对所连接的任何订阅者的更新。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The first validation pipeline uses a <a href="#reference-map">map</a> operator to take the string value input and convert it to nil if it doesn&#8217;t match the validation rules.
-This is also converting the output type from the published property of <code>&lt;String&gt;</code> to the optional <code>&lt;String?&gt;</code>.
-The same logic is also used to trigger updates to the messages label to provide information about what is required.</td>
+<td>第一个验证管道使用 <a href="#reference-map">map</a> 操作符接收字符串值输入，如果与验证规则不符，则将其转换为 nil。
+这也将发布者属性的输出类型从 <code>&lt;String&gt;</code> 转换为可选的 <code>&lt;String?&gt;</code>。
+同样的逻辑也用于触发消息文本的更新，以提供有关所需内容的信息。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Since we are updating user interface elements, we explicitly make those updates wrapped in <code>DispatchQueue.main.async</code> to invoke on the main thread.</td>
+<td>由于我们正在更新用户界面元素，因此我们明确将这些更新包裹在 <code>DispatchQueue.main.async</code> 中，以在主线程上调用。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td><a href="#reference-combinelatest">combineLatest</a> takes two publishers and merges them into a single pipeline with an output type that is the combined values of each of the upstream publishers.
-In this case, the output type is a tuple of <code>(&lt;String&gt;, &lt;String&gt;)</code>.</td>
+<td><a href="#reference-combinelatest">combineLatest</a> 将两个发布者合并到一个管道中，该管道的输出类型是每个上游发布者的合并值。
+在这个例子中，输出类型是 <code>(&lt;String&gt;, &lt;String&gt;)</code> 的元组。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Rather than use <code>DispatchQueue.main.async</code>, we can use the <a href="#reference-receive">receive</a> operator to explicitly run the next operator on the main thread, since it will be doing UI updates.</td>
+<td>与其使用 <code>DispatchQueue.main.async</code>，不如使用 <a href="#reference-receive">receive</a> 操作符明确在主线程上执行下一个操作符，因为它将执行 UI 更新。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The two validation pipelines are combined with <a href="#reference-combinelatest">combineLatest</a>, and the output of those checked and merged into a single tuple output.</td>
+<td>两条验证管道通过 <a href="#reference-combinelatest">combineLatest</a> 相结合，并将经过检查的输出合并为单个元组输出。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>We could store the assignment pipeline as an <code>AnyCancellable?</code> reference (to map it to the life of the viewcontroller) but another option is to create something to collect all the cancellable references.
-This starts as an empty set, and any sinks or assignment subscribers can be added to it to keep a reference to them so that they operate over the full lifetime of the view controller.
-If you are creating a number of pipelines, this can be a convenient way to maintain references to all of them.</td>
+<td>我们可以将分配的管道存储为 <code>AnyCancellable?</code> 引用（将其映射到 viewcontroller 的生命周期），但另一种选择是创建一个变量来收集所有可取消的引用。
+这从空集合开始，任何 sink 或 assign 的订阅者都可以被添加到其中，以持有对它们的引用，以便他们在 viewcontroller 的整个生命周期内运行。
+如果你正在创建多个管道，这可能是保持对所有管道的引用的便捷方式。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>If any of the values are nil, the <a href="#reference-map">map</a> operator returns nil down the pipeline.
-Checking against a nil value provides the boolean used to enable (or disable) the submission button.</td>
+<td>如果任何值为 nil，则 <a href="#reference-map">map</a> 操作符将向管道传递 false 值。
+对 nil 值的检查提供了用于启用（或禁用）提交按钮的布尔值。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>the <code>store</code> method is available on the <a href="https://developer.apple.com/documentation/combine/cancellable">Cancellable</a> protocol, which is explicitly set up to support saving off references that can be used to cancel a pipeline.</td>
+<td><code>store</code> 方法可在 <a href="https://developer.apple.com/documentation/combine/cancellable">Cancellable</a> 协议上调用，该协议明确设置为支持存储可用于取消管道的引用。</td>
 </tr>
 </table>
 </div>
@@ -13154,7 +13154,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-09 14:25:45 UTC
+Last updated 2021-08-09 14:26:54 UTC
 </div>
 </div>
 <style>
