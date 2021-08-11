@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#patterns-sequencing-operations">有序的异步操作</a></li>
 <li><a href="#patterns-general-error-handling">错误处理</a>
 <ul class="sectlevel3">
-<li><a href="#patterns-assertnofailure">Verifying a failure hasn&#8217;t happened using assertNoFailure</a></li>
+<li><a href="#patterns-assertnofailure">使用 assertNoFailure 验证未发生失败</a></li>
 <li><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></li>
 <li><a href="#patterns-retry">在发生暂时失败时重试</a></li>
 <li><a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a></li>
@@ -3363,20 +3363,20 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 这种情况下的一个很好的例子是 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a>。</p>
 </div>
 <div class="sect3">
-<h4 id="patterns-assertnofailure">Verifying a failure hasn&#8217;t happened using assertNoFailure</h4>
+<h4 id="patterns-assertnofailure">使用 assertNoFailure 验证未发生失败</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>Verify no error has occurred within a pipeline</p>
+<p>验证管道内未发生错误</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -3386,7 +3386,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -3399,20 +3399,20 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>Useful in testing invariants in pipelines, the assertNoFailure operator also converts the failure type to <code>&lt;Never&gt;</code>.
-The operator will cause the application to terminate (or tests to crash to a debugger) if the assertion is triggered.</p>
+<p>在管道中测试常量时，断言 assertNoFailure 非常有用，可将失败类型转换为 <code>&lt;Never&gt;</code>。
+如果断言被触发，该操作符将导致应用程序终止（或测试时导致调试器崩溃）。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>This is useful for verifying the invariant of having dealt with an error.
-If you are sure you handled the errors and need to map a pipeline which technically can generate a failure type of <code>&lt;Error&gt;</code> to a subscriber that requires a failure type of <code>&lt;Never&gt;</code>.</p>
+<p>这对于验证已经处理过错误的常量很有用。
+比如你确信你处理了错误，对管道进行了 map 操作，该操作可以将 <code>&lt;Error&gt;</code> 的失败类型转换为 <code>&lt;Never&gt;</code> 传给所需的订阅者。</p>
 </div>
 <div class="paragraph">
-<p>It is far more likely that you want to handle the error with and not have the application terminate.
-Look forward to <a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a> and <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a> for patterns of how to provide logic to handle errors in a pipeline.</p>
+<p>更有可能的是，你希望将错误处理掉，而不是终止应用程序。
+期待后面的 <a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a> 和 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a> 模式吧，它们会告诉你如何提供逻辑来处理管道中的错误。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -13221,7 +13221,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-10 13:39:11 UTC
+Last updated 2021-08-11 11:04:55 UTC
 </div>
 </div>
 <style>
