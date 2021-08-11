@@ -542,7 +542,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></li>
 <li><a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a></li>
-<li><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></li>
+<li><a href="#patterns-testing-subscriber-scheduled">使用从 PassthroughSubject 预定好的发送的事件测试订阅者</a></li>
 <li><a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a></li>
 <li><a href="#patterns-debugging-print">使用 print 操作符调试管道</a></li>
 <li><a href="#patterns-debugging-handleevents">使用 handleEvents 操作符调试管道</a></li>
@@ -5889,20 +5889,20 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 <hr>
 </div>
 <div class="sect3">
-<h4 id="patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</h4>
+<h4 id="patterns-testing-subscriber-scheduled">使用从 PassthroughSubject 预定好的发送的事件测试订阅者</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><em>Goal</em></dt>
+<dt class="hdlist1"><em>目的</em></dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>For testing a pipeline, or subscriber, when what you want to test is the timing of the pipeline.</p>
+<p>当你想要测试的是管道的时序时，用于测试管道或订阅者。</p>
 </li>
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>References</em></dt>
+<dt class="hdlist1"><em>参考</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -5924,7 +5924,7 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>See also</em></dt>
+<dt class="hdlist1"><em>另请参阅</em></dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -5943,19 +5943,19 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 </ul>
 </div>
 </dd>
-<dt class="hdlist1"><em>Code and explanation</em></dt>
+<dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>There are a number of operators in Combine that are specific to the timing of data, including <a href="#reference-debounce">debounce</a>, <a href="#reference-throttle">throttle</a>, and <a href="#reference-delay">delay</a>.
-You may want to test that your pipeline timing is having the desired impact, independently of doing UI testing.</p>
+<p>在 Combine 中有许多针对数据时序的操作符，包括 <a href="#reference-debounce">debounce</a>、<a href="#reference-throttle">throttle</a> 以及 <a href="#reference-delay">delay</a>。
+在进行 UI 测试之外，你可能需要测试你的管道时序具有所需的效果。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>One way of handling this leverages the both <a href="https://developer.apple.com/documentation/xctest/xctestexpectation">XCTestExpectation</a> and a <a href="#reference-passthroughsubject">passthroughSubject</a>, combining the two.
-Building on both <a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a> and <a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a>, add <a href="https://developer.apple.com/documentation/dispatch/dispatchqueue">DispatchQueue</a> in the test to schedule invocations of PassthroughSubject&#8217;s <code>.send()</code> method.</p>
+<p>实现这个的方法之一是利用 <a href="https://developer.apple.com/documentation/xctest/xctestexpectation">XCTestExpectation</a> 和 <a href="#reference-passthroughsubject">passthroughSubject</a>，将两者结合起来。
+基于 <a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a> 和 <a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a>，在测试中添加 <a href="https://developer.apple.com/documentation/dispatch/dispatchqueue">DispatchQueue</a>，以安排 PassthroughSubject 的 <code>.send()</code> 方法的调用。</p>
 </div>
 <div class="paragraph">
-<p>An example of this:</p>
+<p>一个这种用法的例子：</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/PublisherTests.swift#L178">UsingCombineTests/PublisherTests.swift - testKVOPublisher</a></div>
@@ -5984,36 +5984,36 @@ Building on both <a href="#patterns-testing-publisher">Testing a publisher with 
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This adds a <code>DispatchQueue</code> to your test, naming the queue after the test itself.
-This really only shows when debugging test failures, and is convenient as a reminder of what is happening in the test code vs. any other background queues that might be in use.</td>
+<td>这将为你的测试添加 <code>DispatchQueue</code>，并以测试的描述 debugDescription 来命名该队列。
+这只在调试中测试失败时显示，并且在还有其它后台线程也在使用时，方便地提醒测试代码中发生了什么情况。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>.asyncAfter</code> is used along with the deadline parameter to define when a call gets made.</td>
+<td><code>.asyncAfter</code> 和参数 deadline 一起使用，用来定义何时发起请求.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The simplest form embeds any relevant assertions into the subscriber or around the subscriber. Additionally, invoking the <code>.fulfill()</code> on your expectation as the last queued entry you send lets the test know that it is now complete.</td>
+<td>这是将任何相关的断言嵌入到订阅者或其周围的最简单的方式。此外，将 <code>.fulfill()</code> 作为你发送队列的最后一个条目，好让测试知道它现在已完成。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Make sure that when you set up the wait that allow for sufficient time for your queue&#8217;d calls to be invoked.</td>
+<td>请确保当你设置等待超时时间时，有足够的时间让你的队列被调用。</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>A definite downside to this technique is that it forces the test to take a minimum amount of time matching the maximum queue delay in the test.</p>
+<p>此技术的一个明显缺点是，它使得测试花费的最短时间至少是测试中的最大的队列延迟。</p>
 </div>
 <div class="paragraph">
-<p>Another option is a 3rd party library named EntwineTest, which was inspired by the RxTest library.
-EntwineTest is part of Entwine, a Swift library that expands on Combine with some helpers.
-The library can be found on Github at <a href="https://github.com/tcldr/Entwine.git" class="bare">https://github.com/tcldr/Entwine.git</a>, available under the MIT license.</p>
+<p>另一种选择是第三方库，名为 EntwineTest，开发灵感来自 RxTest 库。
+EntwineTest 是 Entwine 的一部分，一个提供了一些 helpers 扩展了 Combine 的 Swift 库。
+该库可以在 github 上找到，位于 <a href="https://github.com/tcldr/Entwine.git，只要使用时遵守" class="bare">https://github.com/tcldr/Entwine.git，只要使用时遵守</a> MIT 证书即可。</p>
 </div>
 <div class="paragraph">
-<p>One of the key elements included in EntwineTest is a virtual time scheduler, as well as additional classes that schedule (<code>TestablePublisher</code>) and collect and record (<code>TestableSubscriber</code>) the timing of results while using this scheduler.</p>
+<p>EntwineTest 中包含的关键元素之一是虚拟时间调度器，以及使用此调度器时安排（<code>TestablePublisher</code>）并收集和记录（<code>TestableSubscriber</code>）结果时间的其他类。</p>
 </div>
 <div class="paragraph">
-<p>An example of this from the EntwineTest project README is included:</p>
+<p>来自 EntwineTest 工程的 README 中的一个例子包含在：</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UsingCombineTests/EntwineTestExampleTests.swift">UsingCombineTests/EntwineTestExampleTests.swift - testExampleUsingVirtualTimeScheduler</a></div>
@@ -6040,22 +6040,22 @@ The library can be found on Github at <a href="https://github.com/tcldr/Entwine.
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Using the virtual time scheduler requires you create one at the start of the test, initializing its clock to a starting value.
-The virtual time scheduler in EntwineTest will commence subscription at the value <code>200</code> and times out at <code>900</code> if the pipeline isn&#8217;t complete by that time.</td>
+<td>使用虚拟时间调度器需要在测试开始时创建一个，将其时钟初始化为起始值。
+EntwineTest 中的虚拟时间调度器将以 <code>200</code> 的值开始订阅，如果管道在时间为 <code>900</code> 时还没完成，则会超时。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>You create your pipeline, along with any publishers or subscribers, as normal.
-EntwineTest also offers a testable publisher and a testable subscriber that could be used as well.
-For more details on these parts of EntwineTest, see <a href="#patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</a>.</td>
+<td>你和以往创建任何发布者或订阅者一样，创建你的管道。
+EntwineTest 还提供可测试的发布者和订阅者，以供使用。
+有关 EntwineTest 这些部分的更多详细信息，请看 <a href="#patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</a>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>.resume()</code> needs to be invoked on the virtual time scheduler to commence its operation and run the pipeline.</td>
+<td><code>.resume()</code> 需要在虚拟时间调度器上调用，以开始其工作和触发管道运行。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Assert against expected end results after the pipeline has run to completion.</td>
+<td>在管道运行到完成后，对预期的最终结果进行断言。</td>
 </tr>
 </table>
 </div>
@@ -13221,7 +13221,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-11 11:04:55 UTC
+Last updated 2021-08-11 11:05:20 UTC
 </div>
 </div>
 <style>
