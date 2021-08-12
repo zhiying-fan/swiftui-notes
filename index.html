@@ -2183,7 +2183,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 </div>
 <div class="paragraph">
 <p>当你在考虑如何使用 Combine 进行开发时，把管道视作这两个类型之一，并把它们混合在一起以实现你的目标，往往是很有帮助的。
-例如，模式 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a> 明确地在不间断的管道中使用一次性的管道来处理错误。</p>
+例如，模式 <a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a> 明确地在不间断的管道中使用一次性的管道来处理错误。</p>
 </div>
 <div class="paragraph">
 <p>当你创建发布者或管道的实例时，好好思考你希望它如何工作是值得的 —— 要么是一次性的，要么是连续的。
@@ -2192,7 +2192,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <div class="paragraph">
 <p>除了管道或发布者将提供多少数据外，你还经常需要考虑管道将提供哪种类型对。
 许多管道更多的是通过各种类型转换数据，并处理该过程中可能出现的错误情况。
-该情况的一个例子是返回一个管道，在管道中如例子 <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a> 所示返回一个列表，以提供一种表示“空”结果的方法，即使列表中永远不会有超过 1 个元素。</p>
+该情况的一个例子是返回一个管道，在管道中如例子 <a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a> 所示返回一个列表，以提供一种表示“空”结果的方法，即使列表中永远不会有超过 1 个元素。</p>
 </div>
 <div class="paragraph">
 <p>最终，使用 Combine 来连接两端的数据：当数据可用时，由原始的发布者发送它们，然后订阅者最终消费数据。</p>
@@ -2281,7 +2281,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <div class="paragraph">
 <p>同样的技术在闭包内构造较小的管道时将非常有用。
 例如，当你想在闭包中给操作符 <a href="#reference-flatmap">flatMap</a> 返回一个发布者时，你可以通过明确的声明闭包应返回 <code>AnyPublisher</code> 来获得更简单的类型推断。
-可以在模式 <a href="#patterns-sequencing-operations">Sequencing operations with Combine</a> 中找到这样的一个例子。</p>
+可以在模式 <a href="#patterns-sequencing-operations">有序的异步操作</a> 中找到这样的一个例子。</p>
 </div>
 </div>
 <div class="sect2">
@@ -2349,7 +2349,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="#reference-future">Future</a> 发布者是专门用来支持这类集成的, 在模式 <a href="#patterns-future">Wrapping an asynchronous call with a Future to create a one-shot publisher</a> 中有一个这样的示例。</p>
+<p><a href="#reference-future">Future</a> 发布者是专门用来支持这类集成的, 在模式 <a href="#patterns-future">用 Future 来封装异步请求以创建一次性的发布者</a> 中有一个这样的示例。</p>
 </div>
 <div class="paragraph">
 <p>如果你想使用发布者提供的数据作为创建此发布者的参数或输入，则有两种通用的方法可以这么做：</p>
@@ -2358,7 +2358,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <ol class="arabic">
 <li>
 <p>使用 <a href="#reference-flatmap">flatMap</a> 操作符, 使用传入的数据创建或返回发布者实例。
-这是模式 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a> 的一种变体。</p>
+这是模式 <a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a> 的一种变体。</p>
 </li>
 <li>
 <p>或者，<a href="#reference-map">map</a> 或 <a href="#reference-trymap">tryMap</a> 可被用做创建发布者实例，紧跟 <a href="#reference-switchtolatest">switchToLatest</a> 链将该发布者解析为将在管道内传递的值。</p>
@@ -2366,13 +2366,13 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 </ol>
 </div>
 <div class="paragraph">
-<p><a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> 和 <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a> 模式说明了这种使用方法。</p>
+<p><a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a> 和 <a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a> 模式说明了这种使用方法。</p>
 </div>
 <div class="paragraph">
 <p>你可能会发现创建返回发布者的对象是值得的。
 这通常使你的代码能够封装与远程或基于网络的 API 通信的详细信息。
 可以使用 <a href="#reference-datataskpublisher">URLSession.dataTaskPublisher</a> 或你自己的代码进行开发。
-在模式 <a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> 中详细介绍了这方面的一个简单的示例。</p>
+在模式 <a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a> 中详细介绍了这方面的一个简单的示例。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -2415,20 +2415,20 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-assign-subscriber">Creating a subscriber with assign</a></p>
+<p><a href="#patterns-assign-subscriber">使用 assign 创建一个订阅者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a></p>
+<p><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber-scheduled">使用从 PassthroughSubject 预定好的发送的事件测试订阅者</a></p>
 </li>
 </ul>
 </div>
 </dd>
 <dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>Sink 创建了一个通用订阅者来捕获或响应来自 Combine 管道的数据，同时支持取消和 <a href="#coreconcepts-lifecycle">publisher subscriber lifecycle</a>。</p>
+<p>Sink 创建了一个通用订阅者来捕获或响应来自 Combine 管道的数据，同时支持取消和 <a href="#coreconcepts-lifecycle">发布者和订阅者的生命周期</a>。</p>
 </dd>
 </dl>
 </div>
@@ -2481,7 +2481,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>Sinks 是通过发布者或管道中的代码链创建的，并为管道提供终点。
-当 sink 在发布者创建或调用时，它通过 <code>subscribe</code> 方法隐式地开始了 <a href="#coreconcepts-lifecycle">the lifecycle</a>，并请求无限制的数据。</td>
+当 sink 在发布者创建或调用时，它通过 <code>subscribe</code> 方法隐式地开始了 <a href="#coreconcepts-lifecycle">发布者和订阅者的生命周期</a>，并请求无限制的数据。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -2524,7 +2524,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-sink-subscriber">Creating a subscriber with sink</a></p>
+<p><a href="#patterns-sink-subscriber">使用 sink 创建一个订阅者</a></p>
 </li>
 </ul>
 </div>
@@ -2533,7 +2533,7 @@ SwiftUI 中的 <a href="https://developer.apple.com/documentation/swiftui/view/"
 <dd>
 <p>Assign 是专门设计用于将来自发布者或管道的数据应用到属性的订阅者，每当它收到数据时都会更新该属性。
 与 sink 一样，它创建时激活并请求无限数据。
-Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如果你的管道可能失败（例如使用 tryMap 等操作符），则需要在使用 <code>.assign</code> 之前 <a href="#patterns-general-error-handling">convert or handle the failure cases</a>。</p>
+Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如果你的管道可能失败（例如使用 tryMap 等操作符），则需要在使用 <code>.assign</code> 之前 <a href="#patterns-general-error-handling">错误处理</a>。</p>
 </dd>
 </dl>
 </div>
@@ -2611,13 +2611,13 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-datataskpublisher-trymap">Stricter request processing with dataTaskPublisher</a></p>
+<p><a href="#patterns-datataskpublisher-trymap">使用 dataTaskPublisher 进行更严格的请求处理</a></p>
 </li>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-retry">Retrying in the event of a temporary failure</a></p>
+<p><a href="#patterns-retry">在发生暂时失败时重试</a></p>
 </li>
 </ul>
 </div>
@@ -2747,13 +2747,13 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-datataskpublisher-decode">Making a network request with dataTaskPublisher</a></p>
+<p><a href="#patterns-datataskpublisher-decode">使用 dataTaskPublisher 发起网络请求</a></p>
 </li>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-retry">Retrying in the event of a temporary failure</a></p>
+<p><a href="#patterns-retry">在发生暂时失败时重试</a></p>
 </li>
 </ul>
 </div>
@@ -2805,7 +2805,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 </div>
 </div>
 <div class="paragraph">
-<p>在 <a href="#patterns-datataskpublisher-decode">previous pattern</a> 中使用了 <a href="#reference-map">map</a> 操作符， 这里我们使用 tryMap，这使我们能够根据返回的内容识别并在管道中抛出错误。</p>
+<p>在 <a href="#patterns-datataskpublisher-decode">上个模式</a> 中使用了 <a href="#reference-map">map</a> 操作符， 这里我们使用 tryMap，这使我们能够根据返回的内容识别并在管道中抛出错误。</p>
 </div>
 <div class="colist arabic">
 <table>
@@ -2960,7 +2960,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-delegate-publisher-subject">Creating a repeating publisher by wrapping a delegate based API</a></p>
+<p><a href="#patterns-delegate-publisher-subject">通过包装基于 delegate 的 API 创建重复发布者</a></p>
 </li>
 </ul>
 </div>
@@ -3109,7 +3109,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-delegate-publisher-subject">Creating a repeating publisher by wrapping a delegate based API</a></p>
+<p><a href="#patterns-delegate-publisher-subject">通过包装基于 delegate 的 API 创建重复发布者</a></p>
 </li>
 <li>
 <p>使用此代码的 ViewController 在 github 的项目中 <a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/AsyncCoordinatorViewController.swift">UIKit-Combine/AsyncCoordinatorViewController.swift</a>.</p>
@@ -3358,9 +3358,9 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 </div>
 <div class="paragraph">
 <p>如何处理管道内的错误取决于管道的定义方式。
-如果管道设置为返回单个结果并终止， 一个很好的例子就是 <a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a>。
+如果管道设置为返回单个结果并终止， 一个很好的例子就是 <a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a>。
 如果管道被设置为持续更新，则错误处理要复杂一点。
-这种情况下的一个很好的例子是 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a>。</p>
+这种情况下的一个很好的例子是 <a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a>。</p>
 </div>
 <div class="sect3">
 <h4 id="patterns-assertnofailure">使用 assertNoFailure 验证未发生失败</h4>
@@ -3412,7 +3412,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 </div>
 <div class="paragraph">
 <p>更有可能的是，你希望将错误处理掉，而不是终止应用程序。
-期待后面的 <a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a> 和 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a> 模式吧，它们会告诉你如何提供逻辑来处理管道中的错误。</p>
+期待后面的 <a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a> 和 <a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a> 模式吧，它们会告诉你如何提供逻辑来处理管道中的错误。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -3449,13 +3449,13 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-retry">Retrying in the event of a temporary failure</a></p>
+<p><a href="#patterns-retry">在发生暂时失败时重试</a></p>
 </li>
 <li>
-<p><a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a></p>
+<p><a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-constrained-network">Requesting data from an alternate URL when the network is constrained</a></p>
+<p><a href="#patterns-constrained-network">网络受限时从备用 URL 请求数据</a></p>
 </li>
 </ul>
 </div>
@@ -3529,7 +3529,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 有关此工作原理的详细信息，请参阅 <a href="#reference-catch">catch</a>。</p>
 </div>
 <div class="paragraph">
-<p>如果你要继续响应错误并处理它们，请参阅 <a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a>。</p>
+<p>如果你要继续响应错误并处理它们，请参阅 <a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a>。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -3572,10 +3572,10 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a></p>
+<p><a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a></p>
 </li>
 </ul>
 </div>
@@ -3698,10 +3698,10 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-retry">Retrying in the event of a temporary failure</a></p>
+<p><a href="#patterns-retry">在发生暂时失败时重试</a></p>
 </li>
 </ul>
 </div>
@@ -3811,10 +3811,10 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-retry">Retrying in the event of a temporary failure</a></p>
+<p><a href="#patterns-retry">在发生暂时失败时重试</a></p>
 </li>
 </ul>
 </div>
@@ -3936,13 +3936,13 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a></p>
+<p><a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-datataskpublisher-trymap">Stricter request processing with dataTaskPublisher</a></p>
+<p><a href="#patterns-datataskpublisher-trymap">使用 dataTaskPublisher 进行更严格的请求处理</a></p>
 </li>
 </ul>
 </div>
@@ -3960,7 +3960,7 @@ Assign 要求将失败类型指定为 <code>&lt;Never&gt;</code>，因此，如�
 <p>以下示例是更大的 ViewController 实现中的代码的一部分。</p>
 </div>
 <div class="paragraph">
-<p>这个例子与下一个模式  <a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> 有点重叠，都建立在一个初始的发布者上。</p>
+<p>这个例子与下一个模式  <a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a> 有点重叠，都建立在一个初始的发布者上。</p>
 </div>
 <div class="listingblock">
 <div class="title"><a href="https://github.com/heckj/swiftui-notes/blob/master/UIKit-Combine/GithubAPI.swift">UIKit-Combine/GithubAPI.swift</a></div>
@@ -4063,7 +4063,7 @@ throttle 操作符保证了每半秒最多可发出 1 个请求。</td>
 </table>
 </div>
 <div class="paragraph">
-<p>模式 <a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> 在此代码上扩展为各种UI元素的多个级联更新。</p>
+<p>模式 <a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a> 在此代码上扩展为各种UI元素的多个级联更新。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -4127,20 +4127,20 @@ throttle 操作符保证了每半秒最多可发出 1 个请求。</td>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-continual-error-handling">Using flatMap with catch to handle errors</a></p>
+<p><a href="#patterns-continual-error-handling">使用 flatMap 和 catch 在不取消管道的情况下处理错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-oneshot-error-handling">Using catch to handle errors in a one-shot pipeline</a></p>
+<p><a href="#patterns-oneshot-error-handling">使用 catch 处理一次性管道中的错误</a></p>
 </li>
 <li>
-<p><a href="#patterns-datataskpublisher-trymap">Stricter request processing with dataTaskPublisher</a></p>
+<p><a href="#patterns-datataskpublisher-trymap">使用 dataTaskPublisher 进行更严格的请求处理</a></p>
 </li>
 </ul>
 </div>
 </dd>
 <dt class="hdlist1"><em>代码和解释</em></dt>
 <dd>
-<p>以下提供的示例是扩展了 <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a> 例子中的发布者, 添加了额外的 Combine 管道，当有人与所提供的界面交互时以更新多个 UI 元素。</p>
+<p>以下提供的示例是扩展了 <a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a> 例子中的发布者, 添加了额外的 Combine 管道，当有人与所提供的界面交互时以更新多个 UI 元素。</p>
 </dd>
 </dl>
 </div>
@@ -4526,7 +4526,7 @@ API 结构体中的函数返回一个发布者，然后与 ViewController 中的
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>从 IBAction 更新用户名的地方（来自我们之前的示例 <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a>）我们让订阅者发出网络请求并将结果放入一个我们的 ViewController 的新变量中（还是 <a href="#reference-published">@Published</a>）。</td>
+<td>从 IBAction 更新用户名的地方（来自我们之前的示例 <a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a>）我们让订阅者发出网络请求并将结果放入一个我们的 ViewController 的新变量中（还是 <a href="#reference-published">@Published</a>）。</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -4615,7 +4615,7 @@ API 结构体中的函数返回一个发布者，然后与 ViewController 中的
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a></p>
+<p><a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a></p>
 </li>
 </ul>
 </div>
@@ -4777,7 +4777,7 @@ API 结构体中的函数返回一个发布者，然后与 ViewController 中的
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>此代码的开头遵照了 <a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a> 中的模式.
+<td>此代码的开头遵照了 <a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a> 中的模式.
 IBAction 消息用于更新 <a href="#reference-published">@Published</a> 属性，触发对所连接的任何订阅者的更新。</td>
 </tr>
 <tr>
@@ -4855,7 +4855,7 @@ IBAction 消息用于更新 <a href="#reference-published">@Published</a> 属性
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-future">Wrapping an asynchronous call with a Future to create a one-shot publisher</a></p>
+<p><a href="#patterns-future">用 Future 来封装异步请求以创建一次性的发布者</a></p>
 </li>
 <li>
 <p><a href="#reference-passthroughsubject">passthroughSubject</a></p>
@@ -5550,13 +5550,13 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a></p>
+<p><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber-scheduled">使用从 PassthroughSubject 预定好的发送的事件测试订阅者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a></p>
 </li>
 </ul>
 </div>
@@ -5710,16 +5710,16 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a></p>
+<p><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></p>
 </li>
 <li>
 <p><a href="#reference-passthroughsubject">passthroughSubject</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber-scheduled">使用从 PassthroughSubject 预定好的发送的事件测试订阅者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</a></p>
+<p><a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a></p>
 </li>
 </ul>
 </div>
@@ -5929,13 +5929,13 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</a></p>
+<p><a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a></p>
+<p><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></p>
 </li>
 <li>
 <p><a href="#reference-passthroughsubject">passthroughSubject</a></p>
@@ -5952,7 +5952,7 @@ Apple 的文档包括一篇关于 <a href="https://developer.apple.com/documenta
 </div>
 <div class="paragraph">
 <p>实现这个的方法之一是利用 <a href="https://developer.apple.com/documentation/xctest/xctestexpectation">XCTestExpectation</a> 和 <a href="#reference-passthroughsubject">passthroughSubject</a>，将两者结合起来。
-基于 <a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a> 和 <a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a>，在测试中添加 <a href="https://developer.apple.com/documentation/dispatch/dispatchqueue">DispatchQueue</a>，以安排 PassthroughSubject 的 <code>.send()</code> 方法的调用。</p>
+基于 <a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a> 和 <a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a>，在测试中添加 <a href="https://developer.apple.com/documentation/dispatch/dispatchqueue">DispatchQueue</a>，以安排 PassthroughSubject 的 <code>.send()</code> 方法的调用。</p>
 </div>
 <div class="paragraph">
 <p>一个这种用法的例子：</p>
@@ -6047,7 +6047,7 @@ EntwineTest 中的虚拟时间调度器将以 <code>200</code> 的值开始订�
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>你和以往创建任何发布者或订阅者一样，创建你的管道。
 EntwineTest 还提供可测试的发布者和订阅者，以供使用。
-有关 EntwineTest 这些部分的更多详细信息，请看 <a href="#patterns-testable-publisher-subscriber">Using EntwineTest to create a testable publisher and subscriber</a>.</td>
+有关 EntwineTest 这些部分的更多详细信息，请看 <a href="#patterns-testable-publisher-subscriber">使用 EntwineTest 创建可测试的发布器和订阅者</a>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -6091,13 +6091,13 @@ EntwineTest 还提供可测试的发布者和订阅者，以供使用。
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-testing-publisher">Testing a publisher with XCTestExpectation</a></p>
+<p><a href="#patterns-testing-publisher">使用 XCTestExpectation 测试发布者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-subscriber">Testing a subscriber with a PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber">使用 PassthroughSubject 测试订阅者</a></p>
 </li>
 <li>
-<p><a href="#patterns-testing-subscriber-scheduled">Testing a subscriber with scheduled sends from PassthroughSubject</a></p>
+<p><a href="#patterns-testing-subscriber-scheduled">使用从 PassthroughSubject 预定好的发送的事件测试订阅者</a></p>
 </li>
 <li>
 <p><a href="#reference-passthroughsubject">passthroughSubject</a></p>
@@ -6260,19 +6260,19 @@ EntwineTest 还提供可测试的发布者和订阅者，以供使用。
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a></p>
+<p><a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a></p>
 </li>
 <li>
-<p><a href="#patterns-sequencing-operations">Sequencing operations with Combine</a></p>
+<p><a href="#patterns-sequencing-operations">有序的异步操作</a></p>
 </li>
 <li>
-<p><a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a></p>
+<p><a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a></p>
 </li>
 <li>
-<p><a href="#patterns-debugging-breakpoint">Debugging pipelines with the debugger</a></p>
+<p><a href="#patterns-debugging-breakpoint">使用调试器调试管道</a></p>
 </li>
 <li>
-<p><a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a></p>
+<p><a href="#patterns-debugging-handleevents">使用 handleEvents 操作符调试管道</a></p>
 </li>
 </ul>
 </div>
@@ -6287,7 +6287,7 @@ EntwineTest 还提供可测试的发布者和订阅者，以供使用。
 </dl>
 </div>
 <div class="paragraph">
-<p>示例 <a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a> 在几个地方都有用到它，使用比较长的描述性前缀，以明确是哪个管道在提供信息。</p>
+<p>示例 <a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a> 在几个地方都有用到它，使用比较长的描述性前缀，以明确是哪个管道在提供信息。</p>
 </div>
 <div class="paragraph">
 <p>通过连接到一个私有的 <code>@Published</code> 的变量 —— githubUserData，两个管道被层叠到了一起。
@@ -6456,7 +6456,7 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 <div class="paragraph">
 <p>虽然非常有效，但 <code>print</code> 操作符是一个钝器，它会生成大量的输出，你必须分析和审查它们以得到你想要的信息。
 如果你想让标识和打印的内容更具选择性，或者如果你需要处理传输的数据才能更有意义地使用它们，那么你可以查看 <a href="#reference-handleevents">handleEvents</a> 操作符。
-有关如何使用此操作符进行调试的更多详细信息，请查阅 <a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a>。</p>
+有关如何使用此操作符进行调试的更多详细信息，请查阅 <a href="#patterns-debugging-handleevents">使用 handleEvents 操作符调试管道</a>。</p>
 </div>
 <div style="page-break-after: always;"></div>
 <hr>
@@ -6496,19 +6496,19 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-debugging-print">Debugging pipelines with the print operator</a></p>
+<p><a href="#patterns-debugging-print">使用 print 操作符调试管道</a></p>
 </li>
 <li>
-<p><a href="#patterns-cascading-update-interface">Cascading UI updates including a network request</a></p>
+<p><a href="#patterns-cascading-update-interface">级联多个 UI 更新，包括网络请求</a></p>
 </li>
 <li>
-<p><a href="#patterns-sequencing-operations">Sequencing operations with Combine</a></p>
+<p><a href="#patterns-sequencing-operations">有序的异步操作</a></p>
 </li>
 <li>
-<p><a href="#patterns-update-interface-userinput">Declarative UI updates from user input</a></p>
+<p><a href="#patterns-update-interface-userinput">通过用户输入更新声明式 UI</a></p>
 </li>
 <li>
-<p><a href="#patterns-debugging-breakpoint">Debugging pipelines with the debugger</a></p>
+<p><a href="#patterns-debugging-breakpoint">使用调试器调试管道</a></p>
 </li>
 </ul>
 </div>
@@ -6544,7 +6544,7 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 </ul>
 </div>
 <div class="paragraph">
-<p>如果每个闭包都包含打印语句，则该操作符将非常像 <a href="#reference-print">print</a> 操作符，具体表现在 <a href="#patterns-debugging-print">Debugging pipelines with the print operator</a>。</p>
+<p>如果每个闭包都包含打印语句，则该操作符将非常像 <a href="#reference-print">print</a> 操作符，具体表现在 <a href="#patterns-debugging-print">使用 print 操作符调试管道</a>。</p>
 </div>
 <div class="paragraph">
 <p>使用 handleEvents 调试的强大之处在于可以选择要查看的内容、减少输出量或操作数据以更好地了解它。</p>
@@ -6652,10 +6652,10 @@ Test Suite 'Selected tests' passed at 2019-07-26 15:59:48.057.
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#patterns-debugging-print">Debugging pipelines with the print operator</a></p>
+<p><a href="#patterns-debugging-print">使用 print 操作符调试管道</a></p>
 </li>
 <li>
-<p><a href="#patterns-debugging-handleevents">Debugging pipelines with the handleEvents operator</a></p>
+<p><a href="#patterns-debugging-handleevents">使用 handleEvents 操作符调试管道</a></p>
 </li>
 </ul>
 </div>
@@ -13221,7 +13221,7 @@ Since the <a href="#reference-assign">assign</a> returns an <code>AnyCancellable
 <div id="footer">
 <div id="footer-text">
 Version 1.2<br>
-Last updated 2021-08-11 11:05:20 UTC
+Last updated 2021-08-12 14:25:40 UTC
 </div>
 </div>
 <style>
