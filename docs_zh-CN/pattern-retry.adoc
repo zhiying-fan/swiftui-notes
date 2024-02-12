@@ -58,7 +58,7 @@ let remoteDataPublisher = urlSession.dataTaskPublisher(for: self.URL!)
     .eraseToAnyPublisher()
 ----
 
-<1> <<reference#reference-delay,delay>> 操作符将流经过管道的结果保持一小段时间，在这个例子中随机选择1至5秒。通过在管道中添加延迟，即使原始请求成功，重试也始终会发生。
+<1> <<reference#reference-delay,delay>> 操作符将流经过管道的结果保持一小段时间，在这个例子中随机选择1至5秒。通过在管道中添加延迟，即使原始请求成功，延迟也始终会发生。
 <2> 重试被指定为尝试3次。
 如果每次尝试都失败，这将导致总共 4 次尝试 - 原始请求和 3 次额外尝试。
 <3> tryMap 被用于检查 dataTaskPublisher 返回的数据，如果服务器的响应数据有效，但不是 200 HTTP 响应码，则返回 `.failure` 完成事件。
